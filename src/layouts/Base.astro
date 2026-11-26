@@ -1,0 +1,139 @@
+---
+import type { Translations } from '../i18n/es';
+import DonateToast from '../components/DonateToast.astro';
+import '../styles/global.css';
+
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+const isEn = currentPath.startsWith('/en');
+const esHref = '/';
+const enHref = '/en/';
+---
+
+<!doctype html>
+<html lang={t.lang} dir={t.dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+
+    <!-- hreflang -->
+    <link rel="alternate" hreflang="es" href={esHref} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="x-default" href={esHref} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:image" content={t.meta.ogImage} />
+    <meta property="og:locale" content={t.lang === 'es' ? 'es_ES' : 'en_US'} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.meta.title} />
+    <meta name="twitter:description" content={t.meta.description} />
+    <meta name="twitter:image" content={t.meta.ogImage} />
+  </head>
+  <body class="min-h-screen bg-bg text-text antialiased">
+    <!-- Scroll progress bar -->
+    <div id="scroll-progress" aria-hidden="true"></div>
+
+    <slot />
+
+    <DonateToast t={t} />
+
+    <!-- Global scripts -->
+    <script>
+      // Scroll progress
+      function updateProgress() {
+        const bar = document.getElementById('scroll-progress');
+        if (!bar) return;
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+        bar.style.width = `${pct}%`;
+      }
+      window.addEventListener('scroll', updateProgress, { passive: true });
+
+      // Scroll reveal with IntersectionObserver
+      const revealEls = document.querySelectorAll('.reveal');
+      if (revealEls.length > 0) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry, index) => {
+              if (entry.isIntersecting) {
+                const el = entry.target as HTMLElement;
+                const staggerIndex = Array.from(revealEls).indexOf(el);
+                setTimeout(() => {
+                  el.classList.add('visible');
+                }, staggerIndex * 80);
+                observer.unobserve(el);
+              }
+            });
+          },
+          { threshold: 0.1 },
+        );
+        revealEls.forEach((el) => observer.observe(el));
+      }
+
+      // Download button — resolve latest release from GitHub API
+      async function resolveDownload() {
+        const btns = document.querySelectorAll<HTMLAnchorElement>('[data-download-btn]');
+        if (btns.length === 0) return;
+
+        const first = btns[0];
+        const owner = first?.dataset.repoOwner;
+        const repo = first?.dataset.repoName;
+        if (!owner || !repo || owner === '<usuario>' || repo === '<repo>') return;
+
+        try {
+          const res = await fetch(
+            `https://api.github.com/repos/${owner}/${repo}/releases/latest`,
+          );
+          if (!res.ok) return;
+          const data: {
+            tag_name?: string;
+            assets?: Array<{ name: string; browser_download_url: string; size: number }>;
+          } = await res.json();
+
+          const asset = data.assets?.find((a) => a.name.endsWith('-portable.zip'));
+          if (asset?.browser_download_url) {
+            btns.forEach((btn) => {
+              btn.href = asset.browser_download_url;
+            });
+          }
+
+          if (data.tag_name) {
+            const ver = data.tag_name.replace(/^v/, '');
+            document.querySelectorAll<HTMLElement>('[data-version-badge]').forEach((el) => {
+              el.textContent = `VER ${ver} [PORT]`;
+            });
+          }
+
+          if (asset?.size) {
+            const mb = (asset.size / (1024 * 1024)).toFixed(1).replace('.', ',');
+            document.querySelectorAll<HTMLElement>('[data-download-meta]').forEach((el) => {
+              el.textContent = (el.textContent ?? '').replace(/~?[\d.,]+\s*MB/i, `${mb} MB`);
+            });
+          }
+        } catch {
+          // Keep default link silently
+        }
+      }
+      resolveDownload();
+    </script>
+  </body>
+</html>

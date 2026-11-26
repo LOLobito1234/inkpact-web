@@ -1,0 +1,24 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div
+  class="border-3 border-pixel-ink bg-bg-board pixel-corners"
+  style="filter: drop-shadow(8px 8px 0 var(--color-pixel-ink));"
+>
+  <!-- Title bar -->
+  <div class="flex items-center gap-2 border-b border-border bg-bg-elevated px-4 py-2">
+    <span class="inline-block size-3 bg-danger pixel-corners-sm" aria-hidden="true"></span>
+    <span class="inline-block size-3 bg-warning pixel-corners-sm" aria-hidden="true"></span>
+    <span class="inline-block size-3 bg-accent pixel-corners-sm" aria-hidden="true"></span>
+    {title && <span class="ml-2 font-pixel text-xs text-text-muted">{title}</span>}
+  </div>
+  <!-- Body -->
+  <div class="p-4">
+    <slot />
+  </div>
+</div>

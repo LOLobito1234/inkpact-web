@@ -1,0 +1,43 @@
+---
+interface Props {
+  code: string;
+  copyLabel: string;
+  copiedLabel: string;
+}
+
+const { code, copyLabel, copiedLabel } = Astro.props;
+const id = `code-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class="relative border border-border bg-bg-board p-4 pixel-corners-sm">
+  <pre class="overflow-x-auto font-mono text-sm text-text"><code id={id}>{code}</code></pre>
+  <button
+    class="copy-btn absolute right-3 top-3 border-2 border-pixel-ink bg-bg-elevated px-2 py-1 font-pixel text-xs uppercase text-text-muted transition-colors hover:border-accent hover:text-accent pixel-corners-sm"
+    data-code-id={id}
+    data-label={copyLabel}
+    data-copied={copiedLabel}
+    type="button"
+    aria-label={copyLabel}
+  >
+    {copyLabel}
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const codeId = btn.dataset.codeId;
+      const el = document.getElementById(codeId ?? '');
+      if (!el) return;
+      try {
+        await navigator.clipboard.writeText(el.textContent ?? '');
+        btn.textContent = btn.dataset.copied ?? 'Copied!';
+        setTimeout(() => {
+          btn.textContent = btn.dataset.label ?? 'Copy';
+        }, 2000);
+      } catch {
+        // Silently fail
+      }
+    });
+  });
+</script>

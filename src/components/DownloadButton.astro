@@ -1,0 +1,60 @@
+---
+import { REPO_URL, REPO_OWNER, REPO_NAME } from '../config';
+
+interface Props {
+  label: string;
+  size?: 'sm' | 'default' | 'hero';
+  showFreeBadge?: boolean;
+  freeLabel?: string;
+  class?: string;
+}
+
+const {
+  label,
+  size = 'default',
+  showFreeBadge = false,
+  freeLabel = 'GRATIS',
+  class: cls = '',
+} = Astro.props;
+
+const sizeClasses =
+  size === 'sm'
+    ? 'px-4 py-2.5 text-sm'
+    : size === 'hero'
+      ? 'px-8 py-5 text-base sm:px-10 sm:py-6 sm:text-xl'
+      : 'px-8 py-5 text-base';
+
+const cornerClass = size === 'sm' ? 'pixel-corners-sm' : 'pixel-corners';
+const shadowValue =
+  size === 'sm'
+    ? 'drop-shadow(2px 2px 0 var(--color-pixel-ink))'
+    : 'drop-shadow(4px 4px 0 var(--color-pixel-ink))';
+---
+
+<div class:list={['relative inline-block', cls]}>
+  <a
+    href={`${REPO_URL}/releases/latest`}
+    class:list={[
+      'inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 border-3 border-pixel-ink bg-accent font-pixel font-bold uppercase tracking-wider text-bg transition-all',
+      'hover:translate-x-1 hover:translate-y-1 active:translate-x-1 active:translate-y-1',
+      cornerClass,
+      sizeClasses,
+      size !== 'sm' && 'pulse-glow',
+    ]}
+    style={`filter: ${shadowValue};`}
+    data-download-btn
+    data-repo-owner={REPO_OWNER}
+    data-repo-name={REPO_NAME}
+  >
+    <span data-download-label>{label}</span>
+  </a>
+
+  {showFreeBadge && (
+    <span
+      class="pointer-events-none absolute -right-3 -top-3 rotate-6 border-2 border-pixel-ink bg-warning px-2 py-0.5 font-pixel text-[10px] font-bold uppercase tracking-wider text-bg pixel-corners-sm"
+      style="filter: drop-shadow(2px 2px 0 var(--color-pixel-ink));"
+    >
+      {freeLabel}
+    </span>
+  )}
+</div>

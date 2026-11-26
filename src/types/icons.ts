@@ -1,0 +1,15 @@
+export type IconName =
+  | 'pencil'
+  | 'laser'
+  | 'shield'
+  | 'users'
+  | 'freeze'
+  | 'pages'
+  | 'keyboard'
+  | 'lock'
+  | 'zip'
+  | 'play'
+  | 'coffee'
+  | 'alert'
+  | 'check'
+  | 'logo';

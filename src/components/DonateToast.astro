@@ -1,0 +1,86 @@
+---
+import type { Translations } from '../i18n/es';
+import { DONATE_URL } from '../config';
+import PixelIcon from './PixelIcon.astro';
+
+interface Props {
+  t: Translations;
+}
+
+const { t } = Astro.props;
+---
+
+<aside
+  id="donate-toast"
+  role="status"
+  aria-live="polite"
+  class="fixed bottom-20 right-4 left-4 z-50 hidden max-w-sm border-3 border-warning bg-bg-elevated p-5 pixel-corners sm:left-auto sm:right-6"
+  style="filter: drop-shadow(8px 8px 0 var(--color-pixel-ink));"
+>
+  <div class="flex items-start gap-3">
+    <div
+      class="flex size-10 shrink-0 items-center justify-center border-2 border-pixel-ink bg-bg-board text-warning pixel-corners-sm"
+    >
+      <PixelIcon name="coffee" size={20} />
+    </div>
+
+    <div class="min-w-0 flex-1">
+      <div class="mb-1 flex items-center justify-between gap-2">
+        <p class="font-pixel text-sm font-bold uppercase tracking-wider text-accent">
+          ✓ {t.donate.toastTitle}
+        </p>
+        <button
+          id="donate-toast-close"
+          type="button"
+          class="-mr-2 -mt-2 flex size-11 shrink-0 items-center justify-center font-pixel text-base text-text-muted transition-colors hover:text-text"
+          aria-label={t.donate.toastClose}
+        >
+          ✕
+        </button>
+      </div>
+
+      <p class="mb-4 text-sm leading-relaxed text-text-muted">
+        {t.donate.toastText}
+      </p>
+
+      <a
+        href={DONATE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex min-h-[44px] w-full items-center justify-center border-2 border-warning bg-warning/10 px-4 py-2 font-pixel text-xs font-bold uppercase tracking-wider text-warning transition-colors pixel-corners-sm hover:bg-warning hover:text-bg"
+      >
+        {t.donate.toastCta}
+      </a>
+    </div>
+  </div>
+</aside>
+
+<script>
+  const toast = document.getElementById('donate-toast');
+  const closeBtn = document.getElementById('donate-toast-close');
+
+  function showToast() {
+    if (!toast) return;
+    toast.classList.remove('hidden');
+  }
+
+  function hideToast() {
+    if (!toast) return;
+    toast.classList.add('hidden');
+  }
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-download-btn]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      // Never block download; show non-intrusive notice right after click
+      setTimeout(showToast, 250);
+    });
+  });
+
+  closeBtn?.addEventListener('click', hideToast);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toast && !toast.classList.contains('hidden')) {
+      hideToast();
+    }
+  });
+</script>

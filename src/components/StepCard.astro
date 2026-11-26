@@ -1,0 +1,62 @@
+---
+import Keycap from './Keycap.astro';
+import PixelIcon, { type IconName } from './PixelIcon.astro';
+
+interface Props {
+  num: string;
+  icon: IconName;
+  accentColor: 'accent' | 'warning' | 'danger';
+  title: string;
+  text: string;
+  status: string;
+  keys?: string[];
+  delay?: number;
+}
+
+const { num, icon, accentColor, title, text, status, keys, delay = 0 } = Astro.props;
+
+const colorClass =
+  accentColor === 'warning'
+    ? 'text-warning'
+    : accentColor === 'danger'
+      ? 'text-danger'
+      : 'text-accent';
+---
+
+<div
+  class="reveal flex flex-col justify-between border border-border bg-bg-elevated p-6 transition-all duration-150 pixel-corners hover:border-accent"
+  style={`filter: drop-shadow(4px 4px 0 var(--color-pixel-ink)); animation-delay: ${delay}ms;`}
+>
+  <div>
+    <!-- Top row: LV. X + pixel icon -->
+    <div class="mb-4 flex items-center justify-between border-b border-border pb-3">
+      <span class:list={['font-pixel text-xl font-bold uppercase tracking-wider', colorClass]}>
+        {num}
+      </span>
+      <span class="flex size-8 items-center justify-center border border-border bg-bg-board text-text-muted pixel-corners-sm">
+        <PixelIcon name={icon} size={18} />
+      </span>
+    </div>
+
+    <h3 class="mb-2 font-pixel text-base font-bold uppercase tracking-wider text-text">{title}</h3>
+    <p class="text-sm leading-relaxed text-text-muted">{text}</p>
+
+    {keys && keys.length > 0 && (
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        {keys.map((key, i) => (
+          <>
+            <Keycap label={key} delay={i * 200} />
+            {i < keys.length - 1 && (
+              <span class="font-pixel text-sm text-text-muted">+</span>
+            )}
+          </>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <!-- Bottom status -->
+  <div class:list={['mt-5 border-t border-border pt-3 font-pixel text-[11px] tracking-wider', colorClass]}>
+    {status}
+  </div>
+</div>

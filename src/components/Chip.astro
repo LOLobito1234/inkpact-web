@@ -1,0 +1,22 @@
+---
+interface Props {
+  label: string;
+  variant?: 'default' | 'free';
+}
+
+const { label, variant = 'default' } = Astro.props;
+
+const classes =
+  variant === 'free'
+    ? 'bg-warning text-bg'
+    : 'bg-bg-elevated text-text';
+---
+
+<span
+  class:list={[
+    'inline-block font-pixel text-xs uppercase tracking-wider px-3 py-1.5 pixel-corners-sm',
+    classes,
+  ]}
+>
+  {label}
+</span>
