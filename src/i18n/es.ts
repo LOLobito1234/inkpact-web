@@ -28,7 +28,7 @@ const es = {
     cta: '⬇ DESCARGAR PARA WINDOWS',
     freeBadge: 'GRATIS',
     github: 'VER EN GITHUB',
-    meta: 'Windows 10/11 · 64 bits · ~2,5 MB · Gratis · Código abierto MIT',
+    meta: 'Windows 10/11 · 64 bits · 2,4 MB · Gratis · Código abierto MIT',
     videoPause: 'Pausar vídeo de fondo',
     videoPlay: 'Reproducir vídeo de fondo',
   },
@@ -137,7 +137,7 @@ const es = {
       'Verifica tu descarga con SHA256 (opcional).',
     ],
     hashLabel: 'Verificar hash (PowerShell):',
-    hashCmd: 'Get-FileHash .\\Inkpact-<VERSION>-portable.zip -Algorithm SHA256',
+    hashCmd: 'Get-FileHash .\\Inkpact-0.0.2-portable.zip -Algorithm SHA256',
     copyLabel: 'Copiar',
     copiedLabel: '¡Copiado!',
     smartscreen: {

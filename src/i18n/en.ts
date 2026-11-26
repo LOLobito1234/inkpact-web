@@ -28,7 +28,7 @@ const en: Translations = {
     cta: '⬇ DOWNLOAD FOR WINDOWS',
     freeBadge: 'FREE',
     github: 'VIEW ON GITHUB',
-    meta: 'Windows 10/11 · 64-bit · ~2.5 MB · Free · Open source MIT',
+    meta: 'Windows 10/11 · 64-bit · 2.4 MB · Free · Open source MIT',
     videoPause: 'Pause background video',
     videoPlay: 'Play background video',
   },
@@ -137,7 +137,7 @@ const en: Translations = {
       'Verify your download with SHA256 (optional).',
     ],
     hashLabel: 'Verify hash (PowerShell):',
-    hashCmd: 'Get-FileHash .\\Inkpact-<VERSION>-portable.zip -Algorithm SHA256',
+    hashCmd: 'Get-FileHash .\\Inkpact-0.0.2-portable.zip -Algorithm SHA256',
     copyLabel: 'Copy',
     copiedLabel: 'Copied!',
     smartscreen: {
